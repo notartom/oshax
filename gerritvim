@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import textwrap
+
+parser = argparse.ArgumentParser(description=textwrap.dedent('''
+    Opens an OpenStack Gerrit review URL in vim. For example, given
+    https://review.opendev.org/#/c/644881/18/nova/compute/manager.py@4178,
+    opens nova/compute/manager.py on line 4178. Line numbers are optional.
+    '''))
+parser.add_argument('url', help='Gerrit URL')
+args = parser.parse_args()
+
+file_spec = '/'.join(args.url.split('/')[7:])
+
+if '@' in args.url:
+    path, line_number = file_spec.split('@')
+    os.execlp('vim', 'vim', '+%d' % int(line_number), path)
+else:
+    path = file_spec
+    os.execlp('vim', 'vim', path)

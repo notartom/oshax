@@ -1,0 +1,8 @@
+#!/bin/sh
+
+useradd -G wheel -m artom
+ssh_dir="/home/artom/.ssh"
+mkdir $ssh_dir
+chown artom:artom $ssh_dir
+chmod 700 $ssh_dir
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWOmZ6xGuZlDxxpWWuQQZ2OzBP+kz6DPfwLFOcWtMm1El7W28rMOcEOE9htSRi3k22nBar/IyDuBxqPcAgt05AUB50cVRtj5/kj0ReEERIzOQKxH5VSATKiZ/ST8OTM9jj7ANvDM1LSZYWhzRCncg2bTLlHK7nKeRQfv3frRVG65dcB2Ks9gr40ht8lq9W5M35mnaMrNTPBX71oAOMQlFtBx0uqtSBPf8mxf5vz+6DmE5ptbEYK9xEW1FHj5f3h1RiPkRQs2LetH5u1RE3nZoCK/aqkf914IGIELb2M9F8Cd/ks0a/TwGDt+hXatybsmHIQNSqT27rQAbcUrlyYpav artom@zoe" > $ssh_dir/authorized_keys
