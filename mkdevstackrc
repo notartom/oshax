@@ -1,0 +1,30 @@
+export MKDS_USER="artom"
+export MKDS_USER_PASSWORD="password"
+export MKDS_ROOT_PASSWORD="password"
+export MKDS_SSH_PUBKEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDu7wacqEBNFL1K4rCAMFERAeWwm00R+TQcEgq22fzVX4hBNjy3aKAtVR6mK0ieG71UrCkRRIMjX9Pt92kbgUuy+EyaKLUaF/NMxXORcgKu50dfs4L8SxYBRylUy/eFrnYlWePA4U+lBn7GSJ9SlpPw7g0cS2JKpu8dDH8SuyJMLIjfh3GEgsTcgn+9nJIHLNTxlxNiA9dxPt+1YTxTo2NZfbcnvm9fCdgLeZdy/5dl6Xks7vtMWeTbyO46dpfKP93rcEuH4XutU7zHUNErHUGZSqittEPa1jh30zQ2BuEjkrqwRu7VgEHLI6VyG/FEa6ulwfu59ITXG2grH2+dPmor artom@jayne"
+
+export MKDS_STATIC_IP=192.168.200.11
+export MKDS_NETMASK=255.255.255.0
+export MKDS_GATEWAY=192.168.200.1
+export MKDS_NAMESERVER=192.168.200.1
+
+export MKDS_GIT_NAME="Artom Lifshitz"
+export MKDS_GIT_EMAIL="alifshit@redhat.com"
+
+export MKDS_CPUS="6"
+export MKDS_RAM="10240"
+export MKDS_VIRT_NETWORK="devstack-numa"
+
+export MKDS_VIMRC=$(cat <<EOF
+syntax on
+set textwidth=79
+set background=dark
+set tabstop=4
+set expandtab
+set shiftwidth=4
+set laststatus=2
+set cursorline
+filetype plugin indent on
+au FileType gitcommit set tw=70
+EOF
+)
