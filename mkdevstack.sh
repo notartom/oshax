@@ -64,6 +64,7 @@ virt-builder fedora-30 \
     --firstboot $TMP_FIRSTBOOT
 sudo mv $MKDS_DISK_IMAGE /var/lib/libvirt/images
 sudo virt-install --import --nographics \
+    --machine q35 \
     --vcpus $MKDS_CPUS \
     --ram $MKDS_RAM \
     -w network=$MKDS_VIRT_NETWORK \
