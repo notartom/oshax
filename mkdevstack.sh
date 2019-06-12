@@ -56,7 +56,7 @@ FIRSTBOOT
 
 virt-builder fedora-30 \
     --size 50G --update --selinux-relabel --format qcow2 \
-    --install git,vim,net-tools,bash-completion \
+    --install git,vim,net-tools,bash-completion,git-review,ctags \
     --output $MKDS_DISK_IMAGE \
     --root-password password:$MKDS_ROOT_PASSWORD \
     --run $TMP_RUNSCRIPT \
