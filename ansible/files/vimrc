@@ -1,0 +1,10 @@
+syntax on
+set textwidth=79
+set background=dark
+set tabstop=4
+set expandtab
+set shiftwidth=4
+set laststatus=2
+set cursorline
+filetype plugin indent on
+au FileType gitcommit set tw=70

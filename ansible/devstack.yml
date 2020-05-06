@@ -1,0 +1,83 @@
+---
+- hosts: all
+  vars_prompt:
+    - name: ip_address
+      prompt: 'IP address (ex: 192.168.200.10/24)'
+      private: no
+  tasks:
+
+  - name: calculate gateway
+    local_action:
+      module: shell
+      # Assumes the gateway is the first IP on the network
+      cmd: '/usr/bin/ipcalc --minaddr {{ ip_address }} | cut -d= -f2'
+    register: calc_gateway
+
+  - name: stack user
+    user:
+      name: stack
+      groups: wheel
+      append: yes
+      # This is just 'password' hashed with `openssl passwd -6`
+      password: $6$hRNGxD/QBtr.CU7H$ujkLgTLA/Vc3nmOeQBCsV6E9aZ6yio/o87dCfnGq89SLfCR5W47/gr7gJTAW2Yz7HUPBX93VDFrop3GNr3Ez7.
+  
+  - name: stack authorized_keys
+    authorized_key:
+      user: stack
+      state: present
+      key: '{{ item }}'
+    with_file:
+      - id_rsa.pub
+  
+  - name: packages
+    package:
+      name: '{{ item }}'
+      state: present
+    with_items:
+     - git
+     - git-review
+     - bash-completion
+     - vim
+     - ctags
+
+  - name: wheel sudo without password
+    lineinfile:
+      path: /etc/sudoers
+      regexp: '^%wheel\s'
+      line: '%wheel        ALL=(ALL)       NOPASSWD: ALL'
+  
+  - name: rcfiles
+    copy:
+      src: '{{ item }}'
+      dest: '/home/stack/.{{ item }}'
+    with_items:
+      - gitconfig
+      - vimrc
+    become: true
+    become_user: stack
+
+  - name: devstack from git
+    git:
+      repo: https://opendev.org/openstack/devstack.git
+      dest: /home/stack/devstack
+    become: true
+    become_user: stack
+
+  - name: firewalld disabled
+    service:
+      name: firewalld
+      enabled: no
+      state: stopped
+
+  - name: get connection name
+    # Assumes a single network interface
+    shell: 'nmcli -g NAME connection show'
+    register: get_conn_name
+
+  - name: static ip
+    shell: '{{ item }}'
+    with_items:
+      - 'nmcli connection modify {{ get_conn_name.stdout }} ipv4.addresses {{ ip_address }}'
+      - 'nmcli connection modify {{ get_conn_name.stdout }} ipv4.gateway {{ calc_gateway.stdout }}'
+      - 'nmcli connection modify {{ get_conn_name.stdout }} ipv4.dns {{ calc_gateway.stdout }}'
+      - 'nmcli connection modify {{ get_conn_name.stdout }} ipv4.method manual'
