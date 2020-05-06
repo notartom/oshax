@@ -63,11 +63,14 @@
     become: true
     become_user: stack
 
-  - name: firewalld disabled
+  - name: firewalls disabled
     service:
-      name: firewalld
+      name: '{{ item }}'
       enabled: no
       state: stopped
+    with_items:
+      - firewalld
+      - iptables
 
   - name: get connection name
     # Assumes a single network interface
