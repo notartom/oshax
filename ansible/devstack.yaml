@@ -11,6 +11,10 @@
 
   tasks:
 
+    - name: disable selinux
+      selinux:
+        policy: disabled
+
     - name: calculate gateway
       local_action:
         module: shell
