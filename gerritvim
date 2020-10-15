@@ -3,6 +3,7 @@
 import argparse
 import os
 import textwrap
+from urllib.parse import urlparse
 
 parser = argparse.ArgumentParser(description=textwrap.dedent('''
     Opens an OpenStack Gerrit review URL in vim. For example, given
@@ -12,9 +13,16 @@ parser = argparse.ArgumentParser(description=textwrap.dedent('''
 parser.add_argument('url', help='Gerrit URL')
 args = parser.parse_args()
 
-file_spec = '/'.join(args.url.split('/')[7:])
+# This is everything after the '#' in the URL,
+# ex: /c/756070/6/nova/virt/hardware.py@42
+fragment = urlparse(args.url).fragment
+tokens = fragment.split('/')
+# Remove the leading /c/756070/6
+tokens = tokens[4:]
+file_spec = '/'.join(tokens)
+# files_spec should now be /nova/virt/hardware.py@42
 
-if '@' in args.url:
+if '@' in file_spec:
     path, line_number = file_spec.split('@')
     os.execlp('vim', 'vim', '+%d' % int(line_number), path)
 else:
