@@ -7,24 +7,24 @@ from urllib.parse import urlparse
 
 parser = argparse.ArgumentParser(description=textwrap.dedent('''
     Opens an OpenStack Gerrit review URL in vim. For example, given
-    https://review.opendev.org/#/c/644881/18/nova/compute/manager.py@4178,
-    opens nova/compute/manager.py on line 4178. Line numbers are optional.
+    https://review.opendev.org/c/openstack/nova/+/764482/1/nova/utils.py#365
+    opens nova/utils.py on line 365. Line numbers are optional.
     '''))
 parser.add_argument('url', help='Gerrit URL')
 args = parser.parse_args()
 
-# This is everything after the '#' in the URL,
-# ex: /c/756070/6/nova/virt/hardware.py@42
-fragment = urlparse(args.url).fragment
-tokens = fragment.split('/')
-# Remove the leading /c/756070/6
-tokens = tokens[4:]
-file_spec = '/'.join(tokens)
-# files_spec should now be /nova/virt/hardware.py@42
+parse_result = urlparse(args.url)
+# Using
+# https://review.opendev.org/c/openstack/nova/+/764482/1/nova/utils.py#365 as
+# an example.
+path = parse_result.path     # '/c/openstack/nova/+/764482/1/nova/utils.py'
+tokens = path.split('/')[7:] # ['nova', 'utils.py']
+filename = '/'.join(tokens)  # 'nova/utils.py'
+tokens = path.split('/')
 
-if '@' in file_spec:
-    path, line_number = file_spec.split('@')
-    os.execlp('vim', 'vim', '+%d' % int(line_number), path)
+line_number = parse_result.fragment # '365'
+
+if line_number:
+    os.execlp('vim', 'vim', '+%d' % int(line_number), filename)
 else:
-    path = file_spec
-    os.execlp('vim', 'vim', path)
+    os.execlp('vim', 'vim', filename)
